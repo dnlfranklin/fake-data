@@ -89,8 +89,8 @@ echo $fake->somaEMultiplicaRandom(1,2); //24
 |randomAscii()|string|Todas|
 |randomElements($array = ['a', 'b', 'c'], $count = 1, $allowDuplicates = false)|array|Todas|
 |randomElement($array = ['a', 'b', 'c'])|mixed|Todas|
-|randomKey($array = [])|int|string|null|Todas|
-|shuffle($arg = '')|array|string|Todas|
+|randomKey($array = [])|int ou string ou null|Todas|
+|shuffle($arg = '')|array ou string|Todas|
 |shuffleArray($array = [])|array|Todas|
 |shuffleString($string = '', $encoding = 'UTF-8')|string|Todas|
 |numerify($string = '###')|string|Todas|
@@ -158,11 +158,11 @@ echo $fake->somaEMultiplicaRandom(1,2); //24
 |localIpv4()|string|Todas|
 |macAddress()|string|Todas|
 |word()|string|Todas|
-|words($nb = 3, $asText = false)|array|string|Todas|
+|words($nb = 3, $asText = false)|array ou string|Todas|
 |sentence($nbWords = 6, $variableNbWords = true)|string|Todas|
-|sentences($nb = 3, $asText = false)|array|string|Todas|
+|sentences($nb = 3, $asText = false)|array ou string|Todas|
 |paragraph($nbSentences = 3, $variableNbSentences = true)|string|Todas|
-|paragraphs($nb = 3, $asText = false)|array|string|Todas|
+|paragraphs($nb = 3, $asText = false)|array ou string|Todas|
 |text($maxNbChars = 200)|string|Todas|
 |boolean($chanceOfGettingTrue = 50)|bool|Todas|
 |md5()|string|Todas|
