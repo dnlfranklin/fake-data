@@ -2,8 +2,6 @@
 
 namespace FakeData;
 
-use FakeData\Extension\StorageExtension;
-
 /**
  * @method string citySuffix()
  *
@@ -314,26 +312,117 @@ use FakeData\Extension\StorageExtension;
  * @method int randomNumber($nbDigits = null, $strict = false)
  *
  * @method int semver($preRelease = false, $build = false)
+ *
+ * @method string bankAccountNumber()
+ * 
+ * @method string streetPrefix() Only for pt-br, es, fr location
+ * 
+ * @method string cityPrefix() Only for pt-br, en, es, it location
+ *
+ * @method string secondaryAddress()
+ *
+ * @method string state() Only for pt-br, en, es, it location
+ *
+ * @method string stateAbbr() Only for pt-br, en, it location
+ *
+ * @method string region() Only for pt-br, fr location
+ *
+ * @method string regionAbbr() Only for pt-br location
+ *
+ * @method string cnpj($formatted = true) Only for pt-br location   
+ *
+ * @method string bank() Only for pt-br location   
+ *
+ * @method string suffix() Only for pt-br. en, es, it location   
+ *
+ * @method string cpf($formatted = true) Only for pt-br location   
+ *
+ * @method string rg($formatted = true) Only for pt-br location   
+ *
+ * @method string sufix() Only for pt-br, en, es and it location  
+ *
+ * @method string areaCode() Only for pt-br, en location  
+ *
+ * @method string cellphone($formatted = true) Only for pt-br location  
+ *
+ * @method string landline($formatted = true) Only for pt-br location  
+ *
+ * @method string phone($formatted = true) Only for pt-br location  
+ *
+ * @method string cellphoneNumber($formatted = true) Only for pt-br location
+ *
+ * @method string landlineNumber($formatted = true) Only for pt-br location
+ *
+ * @method string phoneNumberCleared() Only for pt-br location
+ * 
+ * @method string catchPhrase() Only for en, es, it, fr location
+ * 
+ * @method string bs() Only for en, es, it location
+ * 
+ * @method string ein() Only for en location
+ * 
+ * @method string bankRoutingNumber() Only for en location
+ * 
+ * @method string ssn() Only for en location
+ * 
+ * @method string tollFreeAreaCode() Only for en location
+ * 
+ * @method string tollFreePhoneNumber() Only for en location
+ * 
+ * @method string phoneNumberWithExtension() Only for en location
+ * 
+ * @method string exchangeCode() Only for en location
+ * 
+ * @method string community() Only for es location
+ * 
+ * @method string companyPrefix() Only for es location
+ * 
+ * @method string vat() Only for es, it, fr location
+ * 
+ * @method string dni() Only for es location
+ * 
+ * @method string licenceCode() Only for es location
+ * 
+ * @method string mobileNumber() Only for es, fr location
+ * 
+ * @method string tollFreeNumber() Only for es location
+ * 
+ * @method string department() Only for fr location
+ * 
+ * @method string departmentName() Only for fr location
+ * 
+ * @method string departmentNumber() Only for fr location
+ * 
+ * @method string catchPhraseNoun() Only for fr location
+ * 
+ * @method string catchPhraseAttribute() Only for fr location
+ * 
+ * @method string catchPhraseVerb() Only for fr location
+ * 
+ * @method string siret() Only for fr location
+ * 
+ * @method string siren() Only for fr location
+ * 
+ * @method string nir() Only for fr location
+ * 
+ * @method string phoneNumber07() Only for fr location
+ * 
+ * @method string phoneNumber07WithSeparator() Only for fr location
+ * 
+ * @method string phoneNumber08() Only for fr location
+ * 
+ * @method string phoneNumber08WithSeparator() Only for fr location
+ * 
+ * @method string serviceNumber() Only for fr location
+ * 
+ * @method string taxId() Only for it location
  */
 
 class Generator
 {
-    protected $providers  = [];
-    protected $formatters = [];
     protected $generated  = [];
 
-    public function addProvider($provider)
-    {
-        array_unshift($this->providers, $provider);
-
-        $this->formatters = [];
-    }
-
-    public function getProviders():Array
-    {
-        return $this->providers;
-    }
-
+    
     public function getGenerated():Array
     {
         return $this->generated;
@@ -369,30 +458,12 @@ class Generator
 
     public function format($format, $arguments = []):mixed
     {
-        return call_user_func_array($this->getFormatter($format), $arguments);
-    }
+        $providerClassname = \FakeData\Factory\Formatter::get($format);
 
-    /**
-     * @param string $format
-     *
-     * @return callable
-     */
-    public function getFormatter($format):callable
-    {        
-        if (isset($this->formatters[$format])) {
-            return $this->formatters[$format];
-        }
-
-        foreach ($this->providers as $provider) {
-            if (method_exists($provider, $format)) {
-                $this->formatters[$format] = [$provider, $format];
-
-                return $this->formatters[$format];
-            }
-        }
-
-        throw new \InvalidArgumentException(sprintf('Unknown format "%s"', $format));
-    }
+        $provider = new $providerClassname($this);
+        
+        return call_user_func_array([$provider, $format], $arguments);
+    }    
 
     /**
      * Replaces tokens ('{{ tokenName }}') with the result from the token method call
@@ -415,10 +486,6 @@ class Generator
         return $this->format($method, $attributes);
     }
 
-    public function store(StorageExtension $storage, string $collection = null){
-        $storage->save($this->generated, $collection);
-    }
-
     /**
      * @param string $method
      * @param array  $attributes
@@ -439,6 +506,6 @@ class Generator
 
     public function __wakeup()
     {
-        $this->formatters = [];
+        $this->generated = [];
     }
 }
